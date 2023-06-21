@@ -205,7 +205,9 @@ namespace Criteo.OpenApi.Comparator.Comparators
             foreach (var addedPath in newPaths.Keys.Except(commonPaths))
             {
                 context.PushPathProperty(addedPath, isFromExtension);
-                context.LogInfo(ComparisonRules.AddedPath);
+                //context.LogInfo(ComparisonRules.AddedPath);
+                var newPathItem = newPaths[addedPath];
+                CompareOperations(context, new Dictionary<OperationType, OpenApiOperation>(), newPathItem.Operations);
                 context.Pop();
             }
 

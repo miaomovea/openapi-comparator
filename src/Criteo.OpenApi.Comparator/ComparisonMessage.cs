@@ -73,6 +73,10 @@ namespace Criteo.OpenApi.Comparator
         /// within a JSON document
         public string NewJsonRef => Path.JsonPointer(NewDocument);
 
+        /// <returns>A detailed string for API</returns>
+        /// In format of [/GET /Admin/Roles](https:xxx)
+        public string NewApiDetail => Path.ToDetail(NewDocument);
+
         /// <summary>
         /// A JToken from the new document that contains such information as location.
         /// </summary>

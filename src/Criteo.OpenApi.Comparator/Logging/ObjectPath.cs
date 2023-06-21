@@ -68,7 +68,7 @@ namespace Criteo.OpenApi.Comparator.Logging
         /// This is the OpenAPI path name. To use it as an id we need to remove all parameter names.
         /// For example, "/a/{a}/" and "/a/{b}" are the same paths.
         /// </summary>
-        internal static string OpenApiPathName(string path) => Regex.Replace(path, @"\{\w*\}", @"{}");
+        internal static string OpenApiPathName(string path) => path;// Regex.Replace(path, @"\{\w*\}", @"{}");
 
         /// <summary>
         /// Find the actual value of the OpenApi Path. For example, given the path /pets/{},
@@ -145,6 +145,17 @@ namespace Criteo.OpenApi.Comparator.Logging
                     .Replace("/", "~1")
                 )
                 .Aggregate((a, b) => a == null || b == null ? null : a + "/" + b);
+        }
+
+        internal string ToDetail(IJsonDocument jsonDocument)
+        {
+            // string format : [`GET` /Admin/Scopes](../apis/Admin-APIs/Admin_GetAdminScopes) | [summary]
+            var apiPath = CompletePath(jsonDocument.Token).Select(v => v.name).Take(4).Skip(2).Reverse().ToList();
+            var token = CompletePath(jsonDocument.Token).Select(v => v.token).ToList()[3];
+            var tag = token.SelectToken("$.tags").First().ToString().Replace(" ","-");
+            var url = token.SelectToken("$.operationId").ToString();
+            var summary = token.SelectToken("$.summary").ToString();
+            return $"[`{apiPath.First().ToUpper()}` {apiPath.Last()}](../apis/{tag}/{url}) | {summary}";
         }
     }
 }
